@@ -30,7 +30,7 @@ import AdminOrders from './Pages/Admin/Orders.jsx';
 import AdminAnalytics from './Pages/Admin/Analytics.jsx';
 import AdminSettings from './Pages/Admin/Settings.jsx';
 
-export const backendUrl = "http://localhost:4000";
+export const backendUrl = "https://integrated-farm-server.onrender.com" || "http://localhost:4000";
 export const currency = "₹";
 
 function App() {

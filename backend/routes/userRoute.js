@@ -6,10 +6,7 @@ const userRouter = express.Router();
 
 // Public routes
 userRouter.post('/signup', registerUser);
-userRouter.post("/login", (req, res, next) => {
-  console.log("🔥 /api/user/login ROUTE HIT");
-  next();
-}, loginUser);
+userRouter.post("/login", loginUser);
 
 
 
