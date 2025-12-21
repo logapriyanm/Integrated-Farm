@@ -206,9 +206,7 @@ const Navbar = () => {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{getUserName()}</p>
-                    <span className="inline-block mt-1 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                      {isAdmin ? 'Administrator' : 'User'}
-                    </span>
+                    
                   </div>
                 </div>
               </div>
@@ -239,22 +237,7 @@ const Navbar = () => {
                     );
                   })}
                   
-                  {/* Admin Dashboard in mobile menu */}
-                  {isAdmin && (
-                    <NavLink
-                      to="/admin/dashboard"
-                      className={({ isActive }) =>
-                        `flex items-center gap-4 px-6 py-4 text-lg font-medium transition-all duration-200 ${isActive
-                          ? "text-green-600 bg-green-50 border-r-4 border-green-600"
-                          : "text-gray-700 hover:text-green-600 hover:bg-green-50"
-                        }`
-                      }
-                      onClick={handleMobileLinkClick}
-                    >
-                      <FaTachometerAlt size={20} className="flex-shrink-0" />
-                      Admin Dashboard
-                    </NavLink>
-                  )}
+                 
                 </nav>
               </div>
             </div>
