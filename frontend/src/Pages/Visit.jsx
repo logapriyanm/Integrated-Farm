@@ -3,12 +3,58 @@ import VisitImg from "../assets/Visit.jpg";
 import VisitDatas from "../Datas/VisitData"
 import { steps, audience, benefits } from "../Datas/VisitData"
 
-import { FaCashRegister,FaWhatsapp } from "react-icons/fa";
+import { FaCashRegister, FaWhatsapp } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { CgMail } from "react-icons/cg";
 import { IoCall } from "react-icons/io5";
+import { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { backendUrl } from '../App';
 
 
 const Visit = () => {
+
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [date, setDate] = useState('');
+    const [visitors, setVisitors] = useState(1);
+    const [message, setMessage] = useState('');
+
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+
+        if (!token) {
+            toast.error("Login first then book ticket");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await axios.post(backendUrl + '/api/ticket/book', {
+                name, email, phone, date, visitors, message
+            }, { headers: { token } });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setName('');
+                setEmail('');
+                setPhone('');
+                setDate('');
+                setVisitors(1);
+                setMessage('');
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    }
+
     return (
         <section className="">
 
@@ -24,7 +70,7 @@ const Visit = () => {
                     <p className="mt-4 text-lg md:text-xl text-white">
                         Come see sustainable farming in action!
                     </p>
-                   
+
                 </div>
             </div>
 
@@ -61,7 +107,40 @@ const Visit = () => {
                         <FaCashRegister size={25} />
                     </div>
                     <h1 className="text-2xl font-semibold">Booking System</h1>
-                    <p className="text-gray-600">Our online booking system is coming soon! For now, please contact us directly to schedule your visit.</p>
+                    <p className="text-gray-600 mb-8">Fill the form below to book your visit.</p>
+                    <form onSubmit={onSubmitHandler} className="flex flex-col gap-4 w-full md:w-[500px] bg-white p-8 rounded-xl shadow-lg">
+                        <div className="flex flex-col gap-2 text-left">
+                            <label className="font-semibold">Name</label>
+                            <input onChange={(e) => setName(e.target.value)} value={name} type="text" className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500" required placeholder="Your Name" />
+                        </div>
+                        <div className="flex flex-col gap-2 text-left">
+                            <label className="font-semibold">Email</label>
+                            <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500" required placeholder="Your Email" />
+                        </div>
+                        <div className="flex flex-col gap-2 text-left">
+                            <label className="font-semibold">Phone</label>
+                            <input onChange={(e) => setPhone(e.target.value)} value={phone} type="tel" className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500" required placeholder="Your Phone Number" />
+                        </div>
+                        <div className="flex gap-4">
+                            <div className="flex flex-col gap-2 text-left w-1/2">
+                                <label className="font-semibold">Date</label>
+                                <input onChange={(e) => setDate(e.target.value)} value={date} type="date" className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500" required />
+                            </div>
+                            <div className="flex flex-col gap-2 text-left w-1/2">
+                                <label className="font-semibold">Visitors</label>
+                                <input onChange={(e) => setVisitors(e.target.value)} value={visitors} type="number" min="1" className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500" required />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-2 text-left">
+                            <label className="font-semibold">Message (Optional)</label>
+                            <textarea onChange={(e) => setMessage(e.target.value)} value={message} className="border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500 h-32 resize-none" placeholder="Any special requests?"></textarea>
+                        </div>
+                        <button
+                            type="submit"
+                            className="bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition duration-300 mt-4">
+                            Book Ticket
+                        </button>
+                    </form>
                 </div>
 
                 <div className="p-5 flex flex-col items-center justify-center rounded-xl gap-5 bg-green-100 md:mx-60 mx-5">
@@ -137,23 +216,23 @@ const Visit = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 md:gap-30 gap-5 py-10 items-center justify-center">
                     <div className="flex flex-col gap-1  items-center ">
                         <div className="bg-green-700 p-2  rounded-full text-white">
-                            <IoCall size={20}/>
+                            <IoCall size={20} />
                         </div>
                         <h1 className="font-semibold mt-2 text-sm">Call Us</h1>
                         <h2 className="text-sm">7904074107</h2>
                     </div>
 
-                   <div className="flex flex-col gap-1  items-center ">
+                    <div className="flex flex-col gap-1  items-center ">
                         <div className="bg-green-700 p-2  rounded-full text-white">
-                            <FaWhatsapp size={20}/>
+                            <FaWhatsapp size={20} />
                         </div>
                         <h1 className="font-semibold mt-2 text-sm"> Whatsapp</h1>
                         <h2 className="text-sm">7904074107</h2>
                     </div>
 
-                   <div className="flex flex-col gap-1  items-center ">
+                    <div className="flex flex-col gap-1  items-center ">
                         <div className="bg-green-700 p-2  rounded-full text-white">
-                            <CgMail size={20}/>
+                            <CgMail size={20} />
                         </div>
                         <h1 className="font-semibold mt-2 text-sm">Email</h1>
                         <h2 className="text-sm">info@lokiintegratedfarm.com</h2>

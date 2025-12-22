@@ -8,6 +8,7 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import adminRouter from "./routes/adminRoutes.js";
+import ticketRouter from './routes/ticketRoute.js';
 
 const app = express();
 const port = process.env.PORT || 4000
@@ -18,7 +19,7 @@ connectCloudinary()
 // Middlewares
 app.use(express.json())
 app.use(cors({
-    origin: "https://integrated-farm.onrender.com" || 'http://localhost:5173',
+    origin: ["https://integrated-farm.onrender.com", "http://localhost:5173", "http://localhost:5174"],
     credentials: true
 }))
 
@@ -32,6 +33,7 @@ app.use('/api/orders', orderRouter);
 
 // Admin routes (require admin role)
 app.use("/api/admin", adminRouter);
+app.use('/api/ticket', ticketRouter);
 
 // Test route
 app.get('/', (req, res) => {

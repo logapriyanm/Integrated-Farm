@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { IoBagAdd, IoSettings, IoLogOut } from "react-icons/io5";
 import { MdDashboardCustomize } from "react-icons/md";
-import { FaShoppingBag } from "react-icons/fa";
+import { FaShoppingBag, FaCalendarCheck } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import { FaList } from "react-icons/fa";
 import { useState } from 'react';
@@ -9,12 +9,11 @@ import { toast } from 'react-toastify';
 
 const SidebarLink = ({ to, icon: Icon, children }) => {
     return (
-        <NavLink 
-            className={({ isActive }) => 
-                `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
-                    isActive 
-                        ? 'bg-green-600 text-white' 
-                        : 'hover:bg-gray-100 text-gray-700'
+        <NavLink
+            className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive
+                    ? 'bg-green-600 text-white'
+                    : 'hover:bg-gray-100 text-gray-700'
                 }`
             }
             to={to}
@@ -22,9 +21,9 @@ const SidebarLink = ({ to, icon: Icon, children }) => {
         >
             {({ isActive }) => (
                 <>
-                    <Icon 
-                        size={22} 
-                        className={isActive ? 'text-white' : 'text-gray-600'} 
+                    <Icon
+                        size={22}
+                        className={isActive ? 'text-white' : 'text-gray-600'}
                     />
                     <span className='hidden md:block'>{children}</span>
                 </>
@@ -41,7 +40,7 @@ const AdminSidebar = () => {
         localStorage.removeItem("token");
         toast.info("Logged out successfully");
         navigate("/login");
-       
+
         setIsMobileMenuOpen(false);
     };
 
@@ -68,23 +67,27 @@ const AdminSidebar = () => {
                         <SidebarLink to="/admin/dashboard" icon={MdDashboardCustomize}>
                             Dashboard
                         </SidebarLink>
-                        
+
                         <SidebarLink to="/admin/add-product" icon={IoBagAdd}>
                             Add Product
                         </SidebarLink>
-                        
+
                         <SidebarLink to="/admin/products" icon={FaList}>
                             Products
                         </SidebarLink>
-                        
+
                         <SidebarLink to="/admin/admin-orders" icon={FaShoppingBag}>
                             Orders
                         </SidebarLink>
-                        
+
+                        <SidebarLink to="/admin/tickets" icon={FaCalendarCheck}>
+                            Tickets
+                        </SidebarLink>
+
                         <SidebarLink to="/admin/analytics" icon={SiGoogleanalytics}>
                             Analytics
                         </SidebarLink>
-                        
+
                         <SidebarLink to="/admin/settings" icon={IoSettings}>
                             Settings
                         </SidebarLink>

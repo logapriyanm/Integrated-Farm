@@ -29,9 +29,9 @@ import AdminProducts from './Pages/Admin/List.jsx';
 import AdminOrders from './Pages/Admin/Orders.jsx';
 import AdminAnalytics from './Pages/Admin/Analytics.jsx';
 import AdminSettings from './Pages/Admin/Settings.jsx';
+import AdminTickets from './Pages/Admin/Tickets.jsx';
 
-export const backendUrl = "https://integrated-farm-server.onrender.com" || "http://localhost:4000";
-export const currency = "₹";
+export { backendUrl, currency } from './config';
 
 function App() {
   const location = useLocation();
@@ -41,7 +41,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="top-right" />
 
       {/* ✅ Show Navbar ONLY for non-admin pages */}
       {!isAdminRoute && <Navbar />}
@@ -92,6 +92,7 @@ function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="admin-orders" element={<AdminOrders />} />
             <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="tickets" element={<AdminTickets />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 

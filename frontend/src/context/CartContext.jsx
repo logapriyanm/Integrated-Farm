@@ -4,40 +4,41 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import { backendUrl } from '../config';
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const currency = "₹";
   const delivery_fee = 50;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
-const [token, setToken] = useState(localStorage.getItem("token") || "");
-const [tokenExpiry, setTokenExpiry] = useState(
-  localStorage.getItem("tokenExpiry")
-);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [tokenExpiry, setTokenExpiry] = useState(
+    localStorage.getItem("tokenExpiry")
+  );
 
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (!token || !tokenExpiry) return;
+    if (!token || !tokenExpiry) return;
 
-  const remainingTime = Number(tokenExpiry) - Date.now();
+    const remainingTime = Number(tokenExpiry) - Date.now();
 
-  if (remainingTime <= 0) {
-    logout();
-    navigate("/login");
-    return;
-  }
+    if (remainingTime <= 0) {
+      logout();
+      navigate("/login");
+      return;
+    }
 
-  const timer = setTimeout(() => {
-    toast.info("Session expired. Please login again.");
-    logout();
-    navigate("/login");
-  }, remainingTime);
+    const timer = setTimeout(() => {
+      toast.info("Session expired. Please login again.");
+      logout();
+      navigate("/login");
+    }, remainingTime);
 
-  return () => clearTimeout(timer);
-}, [token, tokenExpiry]);
+    return () => clearTimeout(timer);
+  }, [token, tokenExpiry]);
 
 
   // ---------------- Fetch all products ----------------
@@ -138,48 +139,48 @@ const [tokenExpiry, setTokenExpiry] = useState(
     if (token) mergeGuestCartToDB();
   }, [token]);
 
-// In your CartContext.jsx - update the addToCart function
-const addToCart = async (product, quantity = 1) => {
-  // Check if user is logged in
-  if (!token) {
-    toast.error("Please login to add items to cart");
-    navigate("/login");
-    return;
-  }
-
-  setCart((prevCart) => {
-    const existing = prevCart.find((item) => item._id === product._id);
-    const currentQty = existing ? existing.quantity : 0;
-    const newQty = currentQty + quantity;
-
-    if (newQty > product.stock) {
-      toast.error(`Only ${product.stock} units of ${product.name} available`);
-      return prevCart; // do not update cart
+  // In your CartContext.jsx - update the addToCart function
+  const addToCart = async (product, quantity = 1) => {
+    // Check if user is logged in
+    if (!token) {
+      toast.error("Please login to add items to cart");
+      navigate("/login");
+      return;
     }
 
-    const updatedCart = existing
-      ? prevCart.map((item) =>
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item._id === product._id);
+      const currentQty = existing ? existing.quantity : 0;
+      const newQty = currentQty + quantity;
+
+      if (newQty > product.stock) {
+        toast.error(`Only ${product.stock} units of ${product.name} available`);
+        return prevCart; // do not update cart
+      }
+
+      const updatedCart = existing
+        ? prevCart.map((item) =>
           item._id === product._id ? { ...item, quantity: newQty } : item
         )
-      : [...prevCart, { ...product, quantity }];
+        : [...prevCart, { ...product, quantity }];
 
-    // Sync to DB if logged in
-    if (token) {
-      axios
-        .post(
-          `${backendUrl}/api/cart/update`,
-          { itemId: product._id, quantity: newQty },
-          { headers: { token } }
-        )
-        .then(() => {
-          fetchUserCart();
-        })
-        .catch(() => toast.error("Failed to update cart"));
-    }
+      // Sync to DB if logged in
+      if (token) {
+        axios
+          .post(
+            `${backendUrl}/api/cart/update`,
+            { itemId: product._id, quantity: newQty },
+            { headers: { token } }
+          )
+          .then(() => {
+            fetchUserCart();
+          })
+          .catch(() => toast.error("Failed to update cart"));
+      }
 
-    return updatedCart;
-  });
-};
+      return updatedCart;
+    });
+  };
 
 
   // ---------------- Remove from cart ----------------
@@ -243,31 +244,31 @@ const addToCart = async (product, quantity = 1) => {
   };
 
   useEffect(() => {
-  const interceptor = axios.interceptors.response.use(
-    (res) => res,
-    (err) => {
-      if (err.response?.status === 401) {
-        toast.error("Session expired. Please login again.");
-        logout();
-        navigate("/login");
+    const interceptor = axios.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err.response?.status === 401) {
+          toast.error("Session expired. Please login again.");
+          logout();
+          navigate("/login");
+        }
+        return Promise.reject(err);
       }
-      return Promise.reject(err);
-    }
-  );
+    );
 
-  return () => axios.interceptors.response.eject(interceptor);
-}, []);
+    return () => axios.interceptors.response.eject(interceptor);
+  }, []);
 
 
   // ---------------- Logout helper ----------------
-const logout = () => {
-  setToken("");
-  setTokenExpiry(null);
-  setCart([]);
-  localStorage.removeItem("token");
-  localStorage.removeItem("tokenExpiry");
-  localStorage.removeItem("guestCart");
-};
+  const logout = () => {
+    setToken("");
+    setTokenExpiry(null);
+    setCart([]);
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiry");
+    localStorage.removeItem("guestCart");
+  };
 
   return (
     <CartContext.Provider
