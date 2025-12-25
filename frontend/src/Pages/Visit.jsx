@@ -10,13 +10,14 @@ import { IoCall } from "react-icons/io5";
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { backendUrl } from '../App';
+import { backendUrl } from '../config';
+import { useCart } from "../context/CartContext";
 
 
 const Visit = () => {
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const { token } = useCart();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
