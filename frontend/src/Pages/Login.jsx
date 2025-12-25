@@ -11,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const backendUrl = "http://localhost:4000" || import.meta.env.VITE_BACKEND_URL; 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL ||  "http://localhost:4000" ; 
 
 console.log("LOGIN API URL:", backendUrl + "/api/user/login");
 
