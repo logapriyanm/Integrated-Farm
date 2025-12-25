@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useCart } from "../context/CartContext.jsx";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,10 +11,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setToken, setTokenExpiry } = useCart();
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL ||  "http://localhost:4000" ; 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
-console.log("LOGIN API URL:", backendUrl + "/api/user/login");
+  console.log("LOGIN API URL:", backendUrl + "/api/user/login");
 
   const SubmitHandler = async (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ console.log("LOGIN API URL:", backendUrl + "/api/user/login");
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(`${backendUrl}/api/user/login`, {
         email,
@@ -32,19 +34,25 @@ console.log("LOGIN API URL:", backendUrl + "/api/user/login");
       });
 
       if (response.data.success) {
+        const token = response.data.token;
+        const expiry = Date.now() + 24 * 60 * 60 * 1000; // 1 day
 
+        localStorage.setItem("token", token);
+        localStorage.setItem("tokenExpiry", expiry.toString());
 
-        localStorage.setItem("token", response.data.token);
+        setToken(token);
+        if (setTokenExpiry) setTokenExpiry(expiry.toString());
+
         toast.success("Login successful!");
-        
+
         // Redirect based on role
         if (response.data.user?.role === 'admin') {
           navigate("/admin/dashboard");
         } else {
           navigate("/");
         }
-        
-       
+
+
       } else {
         toast.error(response.data.message || "Invalid credentials");
       }

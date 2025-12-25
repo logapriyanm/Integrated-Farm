@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useCart } from "../context/CartContext.jsx";
 
 export default function CreateAccount() {
   const [name, setName] = useState("");
@@ -10,19 +11,20 @@ export default function CreateAccount() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setToken, setTokenExpiry } = useCart();
 
- const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000"; 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password) {
       toast.error("All fields are required");
       return;
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(`${backendUrl}/api/user/signup`, {
         name,
@@ -31,10 +33,18 @@ export default function CreateAccount() {
       });
 
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
+        const token = response.data.token;
+        const expiry = Date.now() + 24 * 60 * 60 * 1000; // 1 day
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("tokenExpiry", expiry.toString());
+
+        setToken(token);
+        if (setTokenExpiry) setTokenExpiry(expiry.toString());
+
         toast.success("Account created successfully!");
         navigate("/");
-      
+
       } else {
         toast.error(response.data.message || "Signup failed");
       }

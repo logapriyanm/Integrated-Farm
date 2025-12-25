@@ -11,22 +11,21 @@ import { toast } from "react-toastify";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  
-  // Get cart from CartContext
-  const { cart = [] } = useCart() || {};
+
+  // Get cart and auth from CartContext
+  const { cart = [], token, logout } = useCart() || {};
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  
+
   // Check authentication
-  const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
-  
+
   // Get user role from token
 
-  
 
-  
+
+
   // Get user name from token
-  
+
 
   const navLinkClasses = ({ isActive }) =>
     isActive
@@ -37,7 +36,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     toast.info("Logged out successfully");
     navigate("/login");
-   
+
     setIsOpen(false);
   };
 
@@ -76,7 +75,7 @@ const Navbar = () => {
     <nav className="text-gray-700 p-3 shadow-md bg-white fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link to="/"> 
+        <Link to="/">
           <h1 className="text-base font-semibold flex gap-2 text-green-700 items-center">
             <TbPlant size={25} className="text-white bg-green-700 p-1 rounded-2xl" />
             Logi Integrated Farm
@@ -92,7 +91,7 @@ const Navbar = () => {
           <NavLink to="/products" className={navLinkClasses}>Products</NavLink>
           <NavLink to="/visit" className={navLinkClasses}>Visit Us</NavLink>
           <NavLink to="/contact" className={navLinkClasses}>Contact</NavLink>
-          
+
 
         </div>
 
@@ -118,7 +117,7 @@ const Navbar = () => {
 
           {/* User Login / Logout Dropdown */}
           <div className="relative group">
-            <button 
+            <button
               className="flex items-center"
               onClick={handleUserIconClick}
             >
@@ -126,26 +125,26 @@ const Navbar = () => {
                 size={25}
                 className="p-1 rounded-2xl border-2 text-green-700 cursor-pointer"
               />
-              
+
             </button>
 
             {/* Dropdown Menu - Only show on desktop */}
             <div className="hidden md:block absolute right-0 mt-3.5 w-32 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
               {isLoggedIn ? (
                 <>
-                  
-                  
-                  <button 
+
+
+                  <button
                     onClick={() => navigate("/orders")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700"
                   >
                     <FaListAlt className="inline mr-2" size={14} />
                     My Orders
                   </button>
-                  
+
                   {/* Admin Dashboard in dropdown */}
-                  
-                  
+
+
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 border-t border-gray-100"
@@ -166,8 +165,8 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden" 
+          <button
+            className="md:hidden"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -188,7 +187,7 @@ const Navbar = () => {
                   Logi Integrated Farm
                 </h1>
               </Link>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-lg hover:bg-green-100 transition-colors"
                 aria-label="Close menu"
@@ -206,7 +205,7 @@ const Navbar = () => {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{getUserName()}</p>
-                    
+
                   </div>
                 </div>
               </div>
@@ -236,8 +235,8 @@ const Navbar = () => {
                       </NavLink>
                     );
                   })}
-                  
-                 
+
+
                 </nav>
               </div>
             </div>
@@ -246,8 +245,8 @@ const Navbar = () => {
             <div className="flex-shrink-0 border-t border-gray-200 bg-gray-50 p-6 space-y-4">
               {/* Shopping Cart for Mobile */}
               {isLoggedIn && (
-                <NavLink 
-                  to="/cart" 
+                <NavLink
+                  to="/cart"
                   onClick={handleMobileLinkClick}
                   className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
                 >
@@ -272,15 +271,15 @@ const Navbar = () => {
               <div className="space-y-2">
                 {isLoggedIn ? (
                   <>
-                    <button 
+                    <button
                       onClick={handleOrdersClick}
                       className="w-full flex items-center gap-3 px-4 py-3 text-left bg-white rounded-lg border border-gray-200 hover:bg-green-50 hover:border-green-200 transition-colors"
                     >
                       <FaListAlt size={18} className="text-green-600 flex-shrink-0" />
                       <span className="text-lg font-medium text-gray-800">My Orders</span>
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-3 px-4 py-3 text-left bg-white rounded-lg border border-gray-200 hover:bg-red-50 hover:border-red-200 transition-colors"
                     >
@@ -289,8 +288,8 @@ const Navbar = () => {
                     </button>
                   </>
                 ) : (
-                  <NavLink 
-                    to="/login" 
+                  <NavLink
+                    to="/login"
                     onClick={handleMobileLinkClick}
                     className="flex items-center gap-3 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-lg font-medium"
                   >
