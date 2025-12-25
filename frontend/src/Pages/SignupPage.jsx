@@ -11,7 +11,7 @@ export default function CreateAccount() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
- const backendUrl = "http://localhost:4000" || import.meta.env.VITE_BACKEND_URL; 
+ const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000"; 
 
   const submitHandler = async (e) => {
     e.preventDefault();
