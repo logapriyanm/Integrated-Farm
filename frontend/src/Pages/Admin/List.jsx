@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { backendUrl, currency } from "../../App";
+import { backendUrl, currency } from "../../config";
 import { toast } from "react-toastify";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { IoIosArrowDropdown } from "react-icons/io";

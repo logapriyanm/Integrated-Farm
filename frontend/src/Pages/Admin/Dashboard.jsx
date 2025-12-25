@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { backendUrl, currency } from "../../App";
+import { backendUrl, currency } from "../../config";
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
@@ -21,7 +21,7 @@ const Dashboard = () => {
   // ------------------- Fetch Dashboard Data -------------------
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       toast.error("Please login to access dashboard");
       setLoading(false);
@@ -45,7 +45,7 @@ const Dashboard = () => {
 
     } catch (error) {
       console.error("Dashboard Error:", error);
-      
+
       if (error.response) {
         // Server responded with error status
         if (error.response.status === 401) {
@@ -94,7 +94,7 @@ const Dashboard = () => {
       <div className="flex justify-center items-center min-h-screen text-gray-600">
         <div className="text-center">
           <p className="text-lg mb-4">No data available</p>
-          <button 
+          <button
             onClick={fetchDashboardData}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
@@ -235,7 +235,7 @@ const Dashboard = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${currency}${value.toLocaleString()}`, "Sales"]}
               />
               <Line

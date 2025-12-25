@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { backendUrl } from "../../App";
+import { backendUrl } from "../../config";
 // import upload from "../../assets";
 import { toast } from "react-toastify";
 import { IoCloudUploadOutline, IoImageOutline } from "react-icons/io5";
@@ -14,7 +14,7 @@ const Add = () => {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
 
-   const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ const Add = () => {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
           {/* Left - Upload Section */}
           <div className="flex-1">
-            
+
             <label
               htmlFor="image-upload"
               className="flex flex-col items-center justify-center w-full h-64 sm:h-72 lg:h-80 border-2 border-dashed border-gray-300 rounded-xl lg:rounded-2xl p-4 sm:p-6 lg:p-8 cursor-pointer hover:border-green-500 hover:bg-green-50 transition-all duration-300 group"
@@ -103,7 +103,7 @@ const Add = () => {
           <div className="flex-[2] grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Product Name */}
             <div className="space-y-2">
-              
+
               <input
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -116,7 +116,7 @@ const Add = () => {
 
             {/* Category */}
             <div className="space-y-2">
-              
+
               <div className="relative w-full">
                 <select
                   onChange={(e) => setCategory(e.target.value)}
@@ -136,9 +136,9 @@ const Add = () => {
 
             {/* Price */}
             <div className="space-y-2">
-              
+
               <div className="relative">
-               
+
                 <input
                   onChange={(e) => setPrice(e.target.value)}
                   value={price}
@@ -155,7 +155,7 @@ const Add = () => {
 
             {/* Stock */}
             <div className="space-y-2">
-              
+
               <input
                 onChange={(e) => setStock(e.target.value)}
                 value={stock}
@@ -169,7 +169,7 @@ const Add = () => {
 
             {/* Description (full width) */}
             <div className="sm:col-span-2 space-y-2">
-              
+
               <textarea
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}

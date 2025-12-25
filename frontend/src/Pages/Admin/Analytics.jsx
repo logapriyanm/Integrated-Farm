@@ -4,7 +4,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend
 } from "recharts";
-import { backendUrl, currency } from "../../App"; // Import the same configs as Dashboard
+import { backendUrl, currency } from "../../config"; // Import the same configs as Dashboard
 import { toast } from "react-toastify";
 
 const Analytics = () => { // Add token prop
@@ -28,8 +28,8 @@ const Analytics = () => { // Add token prop
 
       try {
         setLoading(true);
-     
-        
+
+
         const headers = { token }; // Add authorization header
 
         // Fetch all data in parallel using Axios with proper headers and backendUrl
@@ -63,12 +63,12 @@ const Analytics = () => { // Add token prop
           console.warn('Products data is not an array:', productsResponse.data);
           setProductsData([]);
         }
-        
+
       } catch (err) {
         console.error('Error fetching analytics data:', err);
-        
-       
-        
+
+
+
         // Set default empty arrays on error
         setSalesData([]);
         setProductsData([]);
@@ -83,7 +83,7 @@ const Analytics = () => { // Add token prop
   // Safe data transformation functions
   const transformRevenueData = (data) => {
     if (!Array.isArray(data)) return [];
-    
+
     return data.map(item => ({
       month: item.month || 'Unknown',
       revenue: item.sales || item.revenue || 0
@@ -92,7 +92,7 @@ const Analytics = () => { // Add token prop
 
   const transformOrdersByStatusData = (stats) => {
     if (!stats || !stats.ordersByStatus) return [];
-    
+
     return Object.entries(stats.ordersByStatus).map(([status, count]) => ({
       status: status.charAt(0).toUpperCase() + status.slice(1),
       count: count || 0
@@ -101,33 +101,33 @@ const Analytics = () => { // Add token prop
 
   const transformCategoryData = (products) => {
     if (!Array.isArray(products)) return [];
-    
+
     return products.reduce((acc, product) => {
       const category = product.category || 'Uncategorized';
       const existingCategory = acc.find(item => item.name === category);
-      
+
       if (existingCategory) {
         existingCategory.value += product.unitsSold || 0;
       } else {
-        acc.push({ 
-          name: category, 
-          value: product.unitsSold || 0 
+        acc.push({
+          name: category,
+          value: product.unitsSold || 0
         });
       }
-      
+
       return acc;
     }, []);
   };
 
   const transformTopProducts = (products) => {
     if (!Array.isArray(products)) return [];
-    
+
     return products
       .sort((a, b) => (b.unitsSold || 0) - (a.unitsSold || 0))
       .slice(0, 5)
       .map(product => ({
-        name: product.name && product.name.length > 15 
-          ? product.name.substring(0, 15) + '...' 
+        name: product.name && product.name.length > 15
+          ? product.name.substring(0, 15) + '...'
           : product.name || 'Unknown Product',
         sales: product.unitsSold || 0
       }));
@@ -135,7 +135,7 @@ const Analytics = () => { // Add token prop
 
   const transformPaymentMethodData = (stats) => {
     if (!stats) return [];
-    
+
     return [
       { name: 'COD', value: stats.codEarnings || 0 },
       { name: 'Online', value: stats.onlineEarnings || 0 }
@@ -164,7 +164,7 @@ const Analytics = () => { // Add token prop
     );
   }
 
-  
+
 
   return (
     <div className="flex flex-col gap-10  p-1 pt-5 md:p-8  w-full rounded-md min-h-screen bg-gray-50">
@@ -215,7 +215,7 @@ const Analytics = () => { // Add token prop
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [`${currency}${Number(value).toLocaleString()}`, 'Revenue']}
                   />
                   <Line

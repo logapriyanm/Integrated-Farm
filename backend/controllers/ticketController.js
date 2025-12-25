@@ -22,7 +22,7 @@ export const bookTicket = async (req, res) => {
 
         await newTicket.save();
 
-        // Send confirmation email
+        // Send confirmation email (non-blocking)
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -30,11 +30,9 @@ export const bookTicket = async (req, res) => {
             text: `Hello ${name},\n\nYour ticket booking request has been received.\n\nDetails:\nDate: ${new Date(date).toDateString()}\nVisitors: ${visitors}\n\nStatus: Pending (Waiting for Admin Approval)\n\nBest regards,\nIntegrated Farm Team`
         };
 
-        try {
-            await transporter.sendMail(mailOptions);
-        } catch (emailError) {
+        transporter.sendMail(mailOptions).catch(emailError => {
             console.log("Booking email error:", emailError);
-        }
+        });
 
         res.json({ success: true, message: "Ticket Booked" });
 
@@ -77,14 +75,12 @@ export const approveTicket = async (req, res) => {
                 text: `Hello ${ticket.name},\n\nYour visit to Integrated Farm on ${new Date(ticket.date).toDateString()} has been approved!\n\nDetails:\nVisitors: ${ticket.visitors}\n\nWe look forward to seeing you.\n\nBest regards,\nIntegrated Farm Team`
             };
 
-            try {
-                const info = await transporter.sendMail(mailOptions);
-                console.log('Email sent: ' + info.response);
-                res.json({ success: true, message: "Ticket approved and email sent." });
-            } catch (emailError) {
-                console.log("Email error:", emailError);
-                res.json({ success: true, message: "Ticket approved, but failed to send email." });
-            }
+            // Send Email non-blocking
+            transporter.sendMail(mailOptions)
+                .then(info => console.log('Email sent: ' + info.response))
+                .catch(emailError => console.log("Email error:", emailError));
+
+            res.json({ success: true, message: "Ticket approved." });
         } else {
             res.json({ success: false, message: "Ticket not found." });
         }
